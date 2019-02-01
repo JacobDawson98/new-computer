@@ -166,8 +166,6 @@ brew install postgresql
 ### Command line tools - install new ones, update others to latest version
 brew install git  # upgrade to latest
 brew install wget
-brew install zsh # zshell
-brew install tmux
 brew install tree
 brew link curl --force
 brew install grep --with-default-names
