@@ -4,7 +4,7 @@
 echo "Ubuntu Install Setup Script"
 
 # Some configs reused from:
-# https://github.com/startcode/autosetup/blob/master/ubuntu_install_common_packages.sh#L8
+# https://github.com/startcode/autosetup/blob/master/ubuntu_install_common_packages.sh
 
 echo ""
 cecho "###############################################" $red
