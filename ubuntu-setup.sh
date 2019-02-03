@@ -1,7 +1,30 @@
 #!/bin/sh
 
-
 echo "Ubuntu Install Setup Script"
+
+
+# Colorize
+
+# Set the colours you can use
+black=$(tput setaf 0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+blue=$(tput setaf 4)
+magenta=$(tput setaf 5)
+cyan=$(tput setaf 6)
+white=$(tput setaf 7)
+
+# Resets the style
+reset=`tput sgr0`
+
+# Color-echo. Improved. [Thanks @joaocunha]
+# arg $1 = message
+# arg $2 = Color
+cecho() {
+  echo "${2}${1}${reset}"
+  return
+}
 
 # Some configs reused from:
 # https://github.com/startcode/autosetup/blob/master/ubuntu_install_common_packages.sh
@@ -98,6 +121,9 @@ echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sud
 # steam
 add-apt-repository multiverse
 
+# tweak
+add-apt-repository universe
+
 
 ##############################
 # Install Packages           #
@@ -113,11 +139,14 @@ packages=(
 ack-grep
 apt-file
 aptitude
+curl
 git
+gnome-tweak-tool
 google-chrome-stable
 htop
 libgconf-2-4
 libappindicator1
+neofetch
 steam
 python-pip
 python3-pip
@@ -131,22 +160,52 @@ for p in ${packages[*]}; do
     apt-get install -y $p
 done
 
+snaps=(
+discord
+remmina
+slack
+spotify
+)
+for s in ${snaps[*]}; do
+    echo $s
+    snap install -y $s
+done
+
 apt-get -f install
 apt-get autoremove -y
 apt-get clean -y
 
-# Install discord
-cd ~/Downloads
-wget -O discord-0.0.1.deb https://discordapp.com/api/download?platform=linux&format=deb
-dpkg -i discord-0.0.1.deb
 
 # Install pyenv
 curl https://pyenv.run | bash
+export PATH="~/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# Install drivers
+echo "Installing drivers"
+ubuntu-drivers autoinstall
 
 #############################################
 ### Install dotfiles repo, run link script  #
 #############################################
-git clone https://github.com/mattjmorrison/dotfiles.git ~/dotfiles
-cd ~/dotfiles/install-scripts
-bash Linux/install-packages.sh
-bash Linux/create-symlinks.sh
+# not currently working
+# git clone https://github.com/mattjmorrison/dotfiles.git ~/dotfiles
+# cd ~/dotfiles/install-scripts
+# bash Linux/install-packages.sh
+# bash Linux/create-symlinks.sh
+
+cecho "Done!" $cyan
+echo ""
+echo ""
+cecho "################################################################################" $white
+echo ""
+echo ""
+cecho "Note that some of these changes require a logout/restart to take effect." $red
+echo ""
+echo ""
+echo -n "Restart?  (y/n)? "
+read response
+if [ "$response" != "${response#[Yy]}" ] ;then
+    reboot
+fi
