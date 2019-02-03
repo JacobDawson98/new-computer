@@ -121,6 +121,7 @@ libappindicator1
 steam
 python-pip
 python3-pip
+vim
 vlc
 xclip
 )
