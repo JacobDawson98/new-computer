@@ -146,6 +146,7 @@ google-chrome-stable
 htop
 libgconf-2-4
 libappindicator1
+mosh
 neofetch
 steam
 python-pip
@@ -165,6 +166,7 @@ discord
 remmina
 slack
 spotify
+tldr
 )
 for s in ${snaps[*]}; do
     echo $s
