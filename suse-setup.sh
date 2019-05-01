@@ -58,6 +58,31 @@ fi
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+
+##############################
+# Remove bloat               #
+##############################
+bloat=(
+chess
+eiciel
+evolution
+lagno
+lftp
+mahjongg
+mines
+mutt
+pidgin
+polari
+quadrapassel
+libreoffice
+sudoku
+)
+
+for trash in ${bloat[*]}; do
+    echo $trash
+    zypper rm -y $trash
+done
+
 ##############################
 # Install Packages           #
 ##############################
