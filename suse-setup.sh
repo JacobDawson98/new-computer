@@ -63,8 +63,8 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ##############################
 zypper update -y
 
-# Version: Leap 15.1 All of Packman
-zypper ar -cfp 90 http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_15.1/ packman
+# Version: Leap 15.0 All of Packman
+zypper ar -cfp 90 http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_15.0/ packman
 # Switch system package to those in packman as a mix of both can cause a variety of issues.
 zypper dup --from packman --allow-vendor-change
 zypper refresh
