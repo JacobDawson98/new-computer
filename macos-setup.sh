@@ -85,7 +85,15 @@ brew tap caskroom/cask
 ### Generate ssh keys & add to ssh-agent
 ### See: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 #############################################
+SETUP_GITHUB=false
+echo ""
+cecho "Would you like to setup github ssh key? (y/n)" $red
+read -r response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  SETUP_GITHUB=true
+fi
 
+if $SETUP_GITHUB; then
 echo "Generating ssh keys, adding to ssh-agent..."
 read -p 'Input email for ssh key: ' useremail
 
@@ -142,6 +150,7 @@ for ((i=0; i<retries; i++)); do
 done
 
 [[ $retries -eq i ]] && echo "Adding ssh-key to GitHub failed! Try again later."
+fi
 
 
 ##############################

@@ -66,48 +66,57 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ### Generate ssh keys & add to ssh-agent
 ### See: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 #############################################
+SETUP_GITHUB=false
+echo ""
+cecho "Would you like to setup github ssh key? (y/n)" $red
+read -r response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  SETUP_GITHUB=true
+fi
 
-echo "Generating ssh keys, adding to ssh-agent..."
-read -p 'Input email for ssh key: ' useremail
+if $SETUP_GITHUB; then
+    echo "Generating ssh keys, adding to ssh-agent..."
+    read -p 'Input email for ssh key: ' useremail
 
-echo "Use default ssh file location, enter a passphrase: "
-ssh-keygen -t rsa -b 4096 -C "$useremail"  # will prompt for password
-eval "$(ssh-agent -s)"
+    echo "Use default ssh file location, enter a passphrase: "
+    ssh-keygen -t rsa -b 4096 -C "$useremail"  # will prompt for password
+    eval "$(ssh-agent -s)"
 
-# Now that sshconfig is synced add key to ssh-agent and
-# store passphrase in keychain
-ssh-add ~/.ssh/id_rsa
+    # Now that sshconfig is synced add key to ssh-agent and
+    # store passphrase in keychain
+    ssh-add ~/.ssh/id_rsa
 
-#############################################
-### Add ssh-key to GitHub via api
-#############################################
+    #############################################
+    ### Add ssh-key to GitHub via api
+    #############################################
 
-echo "Adding ssh-key to GitHub (via api)..."
-echo "Important! For this step, use a github personal token with the admin:public_key permission."
-echo "If you don't have one, create it here: https://github.com/settings/tokens/new"
+    echo "Adding ssh-key to GitHub (via api)..."
+    echo "Important! For this step, use a github personal token with the admin:public_key permission."
+    echo "If you don't have one, create it here: https://github.com/settings/tokens/new"
 
-retries=3
-SSH_KEY=`cat ~/.ssh/id_rsa.pub`
+    retries=3
+    SSH_KEY=`cat ~/.ssh/id_rsa.pub`
 
-for ((i=0; i<retries; i++)); do
-      read -p 'GitHub username: ' ghusername
-      read -p 'Machine name: ' ghtitle
-      read -sp 'GitHub personal token: ' ghtoken
+    for ((i=0; i<retries; i++)); do
+          read -p 'GitHub username: ' ghusername
+          read -p 'Machine name: ' ghtitle
+          read -sp 'GitHub personal token: ' ghtoken
 
-      gh_status_code=$(curl -o /dev/null -s -w "%{http_code}\n" -u "$ghusername:$ghtoken" -d '{"title":"'$ghtitle'","key":"'"$SSH_KEY"'"}' 'https://api.github.com/user/keys')
+          gh_status_code=$(curl -o /dev/null -s -w "%{http_code}\n" -u "$ghusername:$ghtoken" -d '{"title":"'$ghtitle'","key":"'"$SSH_KEY"'"}' 'https://api.github.com/user/keys')
 
-      if (( $gh_status_code -eq == 201))
-      then
-          echo "GitHub ssh key added successfully!"
-          break
-      else
-			echo "Something went wrong. Enter your credentials and try again..."
-     		echo -n "Status code returned: "
-     		echo $gh_status_code
-      fi
-done
+          if (( $gh_status_code -eq == 201))
+          then
+              echo "GitHub ssh key added successfully!"
+              break
+          else
+                echo "Something went wrong. Enter your credentials and try again..."
+                echo -n "Status code returned: "
+                echo $gh_status_code
+          fi
+    done
 
-[[ $retries -eq i ]] && echo "Adding ssh-key to GitHub failed! Try again later."
+    [[ $retries -eq i ]] && echo "Adding ssh-key to GitHub failed! Try again later."
+fi
 
 
 ##############################
