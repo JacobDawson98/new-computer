@@ -58,6 +58,15 @@ fi
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+for trash in ${bloat[*]}; do
+    echo $trash
+    zypper rm -y $trash
+done
+
+##############################
+# Install Packages           #
+##############################
+zypper update -y
 
 ##############################
 # Remove bloat               #
@@ -78,16 +87,6 @@ libreoffice
 sudoku
 )
 
-for trash in ${bloat[*]}; do
-    echo $trash
-    zypper rm -y $trash
-done
-
-##############################
-# Install Packages           #
-##############################
-zypper update -y
-
 # Version: Leap 15.0 All of Packman
 zypper ar -cfp 90 http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_15.0/ packman
 # Switch system package to those in packman as a mix of both can cause a variety of issues.
@@ -100,11 +99,9 @@ ffmpeg
 
 packages=(
 git
-spotify-installer
 vim
 python3-pip
 discord
-MozillaFirefox-devel
 steam
 )
 
@@ -118,13 +115,21 @@ for package in ${packages[*]}; do
     zypper install -y $package
 done
 
-script_dir = pwd
-
 # Install neofetch
+script_dir = pwd
 git clone https://github.com/dylanaraps/neofetch ~/neofetch
 cd ~/neofetch
 make install
 cd script_dir
+
+echo ""
+cecho "Would you like to automatically mount sdb1 on startup? (y/n)" $red
+read -r response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    echo /dev/sdb1    /mnt/exhd    ext4    defaults    0 0 | tee -a /etc/fstab
+    mkdir /mnt/exhd
+    mount -a
+fi
 
 echo ""
 cecho "Would you like to install Nvidia drivers? (y/n)" $red
@@ -133,7 +138,7 @@ if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     # Add Nvidia repo
     zypper addrepo --refresh http://http.download.nvidia.com/opensuse/leap/15.0/ NVIDIA
     # Install Nvidia driver
-    zypper install-new-recommends -y
+    zypper install-new-recommends -auto-agree-with-licenses
 fi
 
 cecho "Done!" $cyan
