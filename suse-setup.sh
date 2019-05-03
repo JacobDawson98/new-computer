@@ -58,40 +58,74 @@ fi
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-for trash in ${bloat[*]}; do
-    echo $trash
-    zypper rm -y $trash
-done
-
-##############################
-# Install Packages           #
-##############################
-zypper update -y
-
 ##############################
 # Remove bloat               #
 ##############################
 bloat=(
-chess
+cheese
+gnome-chess
+gnome-clocks
+gnome-contacts
+gnome-dictionary
+gnome-documents
 eiciel
 evolution
-lagno
+gnote
+iagno
 lftp
-mahjongg
-mines
+libreoffice
+lightsoff
+gnome-logs
+gnome-mahjongg
+gnome-maps
+gnome-mines
+gnome-music
 mutt
+bijiben
+gnome-packagekit
+gnome-power-manager
+gnome-photos
 pidgin
 polari
 quadrapassel
-libreoffice
-sudoku
+simple-scan
+gnome-software
+gnome-sudoku
+swell-foop
+gedit
+transmission-gtk
+patterns-gnome-gnome
+patterns-gnome-gnome_basis
+patterns-gnome-gnome_internet
+patterns-gnome-gnome_utilities
+patterns-gnome-gnome_x11
+patterns-desktop-multimedia
+patterns-desktop-multimedia_opt
+patterns-gnome-gnome_multimedia
+patterns-gnome-gnome_office
+patterns-office-office
+patterns-desktop-imaging
+patterns-desktop-imaging_opt
+patterns-gnome-gnome_imaging
+patterns-gnome-gnome_games
+patterns-games-games
 )
+
+for trash in ${bloat[*]}; do
+    echo $trash
+    zypper rm -y $trash
+done
 
 # Version: Leap 15.0 All of Packman
 zypper ar -cfp 90 http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Leap_15.0/ packman
 # Switch system package to those in packman as a mix of both can cause a variety of issues.
 zypper dup --from packman --allow-vendor-change
 zypper refresh
+
+##############################
+# Install Packages           #
+##############################
+zypper update -y
 
 codecs=(
 ffmpeg
