@@ -160,11 +160,12 @@ fi
 echo "Starting brew app install..."
 
 ### Window Management
-brew cask install spectacle  # window manager
+brew install spectacle  # window manager
 
 
 ### Developer Tools
-brew cask install iterm2
+brew install iterm2
+brew install bazel
 
 
 ### Development
@@ -185,19 +186,16 @@ brew install trash  # move to osx trash instead of rm
 brew install python
 brew install pyenv
 
-
 ### Productivity
-brew cask install google-chrome
-
+brew install firefox-developer-edition
 
 ### Keyboard & Mouse
 brew cask install karabiner-elements  # remap keys, vim shortcuts
 
 
 ### Chat / Video Conference
-brew cask install slack
-brew cask install discord
-brew cask install zoomus
+brew install slack
+brew install discord
 
 
 ### Run Brew Cleanup
@@ -345,9 +343,9 @@ defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
 ### Install dotfiles repo, run link script
 #############################################
 git clone https://github.com/mattjmorrison/dotfiles.git ~/dotfiles
+git clone https://github.com/jacobdawson98/custom-configs ~/dotfiles/custom-configs
 cd ~/dotfiles/install-scripts
-bash OSX/install-packages.sh
-bash OSX/create-symlinks.sh
+bash OSX/setup.sh
 
 
 echo ""
